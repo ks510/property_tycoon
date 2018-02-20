@@ -1,0 +1,79 @@
+Online / Formatted version can be found on Google Drive here:
+https://docs.google.com/document/d/1jpbOVtjYgm0cNNQkFU9cjz2ZhsUgPGp8Y9zEkt5DFhE/edit?usp=sharing
+
+Compilation of Q&As from emails
+
+Rules of the Game / Implementation
+-------------------------------------
+Q: Are house and hotel values calculated as part of the player assets ?
+A: Yes, see the end of section 3 in the statement of user requirements.
+
+Q: Will Players be able to trade properties ?
+A: Not at this stage. If a player needs to raise funds, the property can be sold to the bank. Another player would need to land on the property at a later stage to buy it. It's a nice idea though ...
+
+Q) Can players trade with each other? Having played the game, we found that without players being able to trade properties for other property of money, the game does not conclude, as it is rare for players to get a whole street.
+A) We are thinking about this one, and will send out further guidance at a later date.
+
+Q: Will there be a penalty for players un-mortgaging previously mortgaged property?
+A: No. The player will need to pay the appropriate fee to unmortgage the property. That fee is one half of the property value as shown on the property card. That fee is paid to the bank. Remember that no rents can be collected from a property whilst it is mortgaged.
+
+Q) Does currency come in the form of 1,5,20,50,100 and 500 pound denominations, or can currency be treated as a series of single pounds?
+A) Unlike the board game, money can just be treated as a single value. There is no need to model the individual notes.
+
+Q) During bidding can a player sell some of their properties in order to make a higher bid?
+A) A player cannot sell assets outside of their turn. Bids have to be made using cash assets in their possession at the time the bid is made
+
+Q) Is there a starting price for an auction, or does the price begin at 0?
+A) The starting price should be £1.
+
+Q) What "Assets" can the bank buy?
+A) Any property asset, house or hotel. Get out of jail cards and the tokens have no value.
+
+Q)  What happens to a player's assets if they can't pay another player? Are they mortgaged, then passed on to the player that they owe money?
+A) Assets are sold to the bank to raise cash to pay the player. If a player cannot raise enough cash, all the cash proceeds from sale of assets to the bank is paid to the player and the bankrupt player retires from the game.
+
+Q)  It states a hotel is worth 4 houses, so can you have two houses with 3 houses and one with a hotel?
+A) No, the maximum difference between improvements on one colour group is one house. So you can have a hotel on one, and four houses on the others. We could have been more clear on this point in the specification. To buy a hotel costs effectively the price of 5 houses. We will update the original specification in respect of this point shortly.
+
+Q)  Does a player have the option to pay the £50 to get out of jail the second they go to jail, or on the next turn?
+A) Yes, they can opt to pay the fine immediately. Their token is then moved to free parking and they move on their next turn.
+
+Q) The specification says "Get out of jail on two turns", do you roll on the third and move along the board or get out on the third?
+A) You get out on the third. So your token moves to just visiting and then you make a move as normal on the next turn.
+
+Q) Do you have to use a get out of jail free card?
+A) No. But it has no resale value.
+
+Q) Can you withdraw from the abridged version?
+A) A human player may withdraw from either version of the game at any time. If they withdraw for any reason, all their assets are returned to the bank. A player game agent may not retire of its own choosing for any reason whatsoever.
+
+Q) Can you tell us more about how you want the banker to function in game? Can the Banker cheat? Or does the banker just press the set buttons to fulfil transactions? In essence does the game enforce the rules upon the banker so the banker can never make a mistake or cheat?
+A) The banker is totally honest, independent and never makes mistakes.
+
+Q) "Fun to play" and "Reflects the spirit and character of the game" are both very ambiguous phrases, do you have some clarity for this either textually or in the form of examples as to what you are requesting with these phrases? If these phrases cannot be reworded, we politely request that they are removed from the specification, to be replaced with with a more suitable outline of the graphics/interface.
+A) But these are our requirements! This what we need. That's why we put then in the document. Try asking more specific questions.
+-------------------------------------------------
+
+GUI Questions
+-------------------------------------------------
+Q)  It says there is a free parking square in the centre of the board, is this along side a free parking square on the playable board (The squares the player will circulate)?
+A) In the original game, the fines collected for free parking area placed on a space in the centre of the board. This is n addition to the space on the main board.
+-------------------------------------------------
+
+Technical Questions
+-------------------------------------------------
+Q: Can we use libraries as part of our design and solution?
+A: Yes. However, the core of the solution should be of your own design and implementation. You can use libraries where they add value. This is particularly likely to be true when building a user interface. You should always remember to acknowledge any libraries you use clearly in both the code itself and in any accompanying documentation. Failure to acknowledge such sources would be regarded as plagiarism. If you have any doubts, raise a specific query.
+-------------------------------------------------
+
+Possible Extensions (Risks!)
+-------------------------------------------------
+Q)  Amount of players. The game was limited to 6 players as the bank had a finite amount of money, are we following the 6 player maximum rule? If so, would expansion of player quantity limit be something you may look at in the future?
+A) We did some thinking on this. The current game has a limit of 6 players imposed by the player tokens. There is no particular reason why it can't be more than 6, but in practice we found that with more than 6, the chances of any player actually winning was too low and made the gameplay boring. So 6 will remain the maximum number of players.
+
+Q)  If there is the ability to add more players, could you suggest more player piece objects; further to the hatstand, spoon, etc. Alternatively, we can incorporate a way of adding pieces at any time.  
+A) Whilst there are no more players, it might be nice if the pieces could be customizable.
+--------------------------------------------------
+
+
+
