@@ -1,4 +1,4 @@
-Last Updated: 23/02/2018
+Last Updated: 26/02/2018
 -------------------------------------
 Online / Formatted version can be found on Google Drive here:
 https://docs.google.com/document/d/1jpbOVtjYgm0cNNQkFU9cjz2ZhsUgPGp8Y9zEkt5DFhE/edit?usp=sharing
@@ -49,17 +49,40 @@ A) No. But it has no resale value.
 Q) Can you withdraw from the abridged version?
 A) A human player may withdraw from either version of the game at any time. If they withdraw for any reason, all their assets are returned to the bank. A player game agent may not retire of its own choosing for any reason whatsoever.
 
+Q) Can the user modify the names/group/action/cost of the tiles? If so, especially in terms of action, how should we expect the input should be formatted? i.e will "pay" before a pound value always mean to take away money from the current player?
+A) If it's a player paying the rent, it comes from the current player assets. If it's the ban paying, then the money comes from the bank assets.
+
+Q) Can the user modify the 'rent' of the utilities, stations and property tiles? If so what standard input should we expect to receive from the utilities and stations notes section in order to know how to modify their rent?
+A) The rent is set at the time the game is initialized. The rents are initialized at whatever value was contained in the external configuration file.
+
+Q) Can the user adjust the price of house and hotel costs?
+A) No. The prices are set as part of the original game.
+
+Q) Is there a limit on the total number of hotels/houses available for purchase like in the original game of monopoly?
+A) Watson Games is committed to the construction of affordable housing so there does not seem to be any useful limit in this respect.
+
+Q) Following on from that if there is a limit, would it go against your definition of the spirit of the game for a player to hoard houses when there are none left so that other players can't buy any?
+A) Hoarding houses is a mean trick.
+
 Q) Can you tell us more about how you want the banker to function in game? Can the Banker cheat? Or does the banker just press the set buttons to fulfil transactions? In essence does the game enforce the rules upon the banker so the banker can never make a mistake or cheat?
 A) The banker is totally honest, independent and never makes mistakes.
 
 Q) "Fun to play" and "Reflects the spirit and character of the game" are both very ambiguous phrases, do you have some clarity for this either textually or in the form of examples as to what you are requesting with these phrases? If these phrases cannot be reworded, we politely request that they are removed from the specification, to be replaced with with a more suitable outline of the graphics/interface.
 A) But these are our requirements! This what we need. That's why we put then in the document. Try asking more specific questions.
+
 -------------------------------------------------
 
 GUI Questions
 -------------------------------------------------
 Q)  It says there is a free parking square in the centre of the board, is this along side a free parking square on the playable board (The squares the player will circulate)?
 A) In the original game, the fines collected for free parking area placed on a space in the centre of the board. This is n addition to the space on the main board.
+
+Q) Can the user customise the amount of tiles, i.e removing tiles wholesale from the spreadsheet or adding their own tiles? 
+A) The amount of tiles should remain fixed as in the original game.
+
+Q) We're assuming that the purple properties at positions 12, 14 and 15 are a different group from those at 38 and 40. Is this correct?
+A) The Excel sheet has been updated to correct this error. Please download the latest version.
+
 -------------------------------------------------
 
 Technical Questions
