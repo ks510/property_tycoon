@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace PropertyTycoonProject.Assets
+namespace PropertyTycoonProject
 {
-    interface IAction
+    /// <summary>
+    /// Marker interface for all action classes. Implementing classes represent an
+    /// action to be carried out by the player in the game.
+    /// </summary>
+    public interface IAction
     {
-        ActionType GetAction();
+
     }
 }
