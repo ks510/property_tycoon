@@ -4,7 +4,7 @@ public class GameData
 {
     private List<PotLuck> potLuckCards;
     private List<OpportunityKnocks> opportunityKnocksCards;
-    private IGameSpace[] boardSpaces;
+    private IBoardSpace[] boardSpaces;
     private int spaces;
 
 	public GameData()
@@ -28,9 +28,9 @@ public class GameData
         opportunityKnocksCards.Add(card);
     }
 
-    public void AddGameSpace(IGameSpace space)
+    public void AddGameSpace(IBoardSpace space)
     {
-        //add gamespace to the next space in the board array
+        //add board space to the next space in the board array
         if (checkSpaces())
         {
             boardSpaces[spaces] = space;
@@ -49,7 +49,7 @@ public class GameData
         return opportunityKnocksCards;
     }
 
-    public IGameSpace[] GetBoardSpaces()
+    public IBoardSpace[] GetBoardSpaces()
     {
         return boardSpaces;
     }
