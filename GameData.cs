@@ -11,7 +11,7 @@ public class GameData
 	{
         potLuckCards = new List<PotLuck>();
         opportunityKnocksCards = new List<OpportunityKnocks>();
-        boardSpaces = new IGameSpace[40];
+        boardSpaces = new IBoardSpace[40];
         int spaces = 0;
 	}
     
