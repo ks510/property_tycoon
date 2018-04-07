@@ -45,8 +45,8 @@ namespace PropertyTycoonProject
         /// <param name="space">Board space</param>
         public void AddBoardSpace(IBoardSpace space)
         {
-            //add board space to the next space in the board array
-            if (CheckFullSpaces())
+            //add board space to the next space in the board array if there is space
+            if (!CheckFullSpaces())
             {
                 boardSpaces[spaces] = space;
                 IncrementSpaces();
@@ -94,6 +94,15 @@ namespace PropertyTycoonProject
         public bool CheckFullSpaces()
         {
             return spaces == 40;
+        }
+
+        /// <summary>
+        /// Return the total number of board spaces added to the board currently.
+        /// </summary>
+        /// <returns></returns>
+        public int GetNumberOfSpaces()
+        {
+            return spaces;
         }
 
     }
