@@ -56,6 +56,23 @@ namespace PropertyTycoonTest
             }
         }
 
+        [TestMethod]
+        public void GameData_AddBoardSpaces()
+        {
+            GameData data = new GameData();
+
+            // attempting to add 41 board spaces to the board
+            for(int i = 0; i < 41; i++)
+            {
+                data.AddBoardSpace(new JailSpace());
+            }
+
+            // ensures only 40 spaces were added to the board, adding anymore will be omitted
+            Assert.AreEqual(40, data.GetNumberOfSpaces());
+            Assert.IsTrue(data.CheckFullSpaces());
+            Assert.AreEqual(40, data.GetBoardSpaces().Length);
+        }
+
 
     }
 }
