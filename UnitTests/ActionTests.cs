@@ -109,11 +109,11 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void CreateDrawCardAction()
         {
-            string cardName = "Pot Luck";
-            DrawCardAction drawCard = new DrawCardAction(cardName);
+            CardType card = CardType.PotLuck;
+            DrawCardAction drawCard = new DrawCardAction(card);
 
             // correct card name stored
-            Assert.AreEqual("Pot Luck", drawCard.GetCardName());
+            Assert.AreEqual(card, drawCard.GetCardType());
             // implements IAction
             Assert.IsTrue(drawCard is IAction);
 
@@ -122,7 +122,7 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void CreateChoiceAction()
         {
-            IAction drawCard = new DrawCardAction("Pot Luck");
+            IAction drawCard = new DrawCardAction(CardType.PotLuck);
             IAction payBank = new PayAction(50, Recipient.Bank);
             ChoiceAction choiceCard = new ChoiceAction(drawCard, payBank);
 
