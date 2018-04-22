@@ -9,29 +9,29 @@ namespace PropertyTycoonTest
     public class HumanPlayerTest
     {
  
-        /*
+        
         [TestMethod]
         public void CreateHumanPlayer()
         {
             // assert human objects are initialised correctly
-
+            HumanPlayer player = new HumanPlayer("Bob", 0, Token.Boot);
             Assert.AreEqual(1500, player.PeekCash()); // player starts with £1500 cash
             Assert.AreEqual(0, player.GetCurrentSpace()); // player starts at "Go" space (0)
             Assert.IsFalse(player.InJail()); // player never starts in jail
-            Assert.AreEqual(0, player.TurnsInJail()); // player never went to jail yet
+            Assert.AreEqual(0, player.GetTurnsInJail()); // player never went to jail yet
             Assert.AreEqual(0, player.GetJailFreeCards()); // does not own any jail free cards at the start
-            Assert.AreEqual(0, player.GetPropertiesOwned().Length); // no properties owned yet
+            Assert.AreEqual(0, player.GetPropertiesOwned().Count); // no properties owned yet
             Assert.AreEqual(0, player.GetNumberOfStations()); // no stations owned yet
             Assert.AreEqual(0, player.GetNumberOfUtilities()); // no utilities owned yet
             Assert.AreEqual(0, player.GetDoublesRolled()); // no doubles rolled, player hasn't taken a turn yet
             Assert.IsFalse(player.RolledDouble()); // player hasn't taken a turn yet
             Assert.IsFalse(player.IsBankrupt()); // can't be bankrupt at the start of the game
             Assert.IsFalse(player.HasPassedFirstGo()); // not yet completed one circuit of the board
-            Assert.AreEqual("Bob", player.GetName()); // correct name stored
-            Assert.AreEqual(1, player.GetPlayerID()); // correct player ID stored
+            Assert.AreEqual("Bob", player.GetPlayerName()); // correct name stored
+            //Assert.AreEqual(1, player.GetPlayerID()); // correct player ID stored
             Assert.AreEqual(Token.Boot, player.GetToken()); // correct token stored
         }
-        */
+        
 
         [TestMethod]
         public void PlayerRollsDice()
@@ -271,25 +271,50 @@ namespace PropertyTycoonTest
         public void Player_TradeProperty()
         {
             DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
             Station lewes = new Station("Lewes Station", 200);
             HumanPlayer sarah = new HumanPlayer("Sarah", 0, Token.Boot);
             HumanPlayer bob = new HumanPlayer("Bob", 1, Token.Hatstand);
 
-            // sarah buys crapper street and bob buys lewes station
+            // sarah buys crapper street, gangsters paradise and bob buys lewes station
             sarah.BuyProperty(crapperStreet);
+            sarah.BuyProperty(gangsters);
             bob.BuyProperty(lewes);
-            Assert.AreEqual(sarah, crapperStreet.GetOwner());
-            Assert.AreEqual(bob, lewes.GetOwner());
-            // they agree to trade properties
-            sarah.TradeProperty(crapperStreet, lewes);
-            bob.TradeProperty(lewes, crapperStreet);
-            // check ownership was swapped correctly
-            Assert.AreEqual(bob, crapperStreet.GetOwner());
-            Assert.AreEqual(sarah, lewes.GetOwner());
+
+            // assume bob and sarah agree to trade 2 brown properties for lewes station
+            // trade method only handles updated player property lists and station/utility counts
+            List<IProperty> tradeOff = new List<IProperty>() { crapperStreet, gangsters };
+            List<IProperty> tradeReturn = new List<IProperty>() { lewes };
+            sarah.TradeProperties(tradeOff, tradeReturn);
+            bob.TradeProperties(tradeReturn, tradeOff);
+
+            // check player's owned property lists are updated correctly
             Assert.IsTrue(bob.GetPropertiesOwned().Contains(crapperStreet));
+            Assert.IsTrue(bob.GetPropertiesOwned().Contains(gangsters));
             Assert.IsFalse(bob.GetPropertiesOwned().Contains(lewes));
+            Assert.AreEqual(0, bob.GetNumberOfStations()); // check stations count updated
+
             Assert.IsFalse(sarah.GetPropertiesOwned().Contains(crapperStreet));
+            Assert.IsFalse(sarah.GetPropertiesOwned().Contains(gangsters));
             Assert.IsTrue(sarah.GetPropertiesOwned().Contains(lewes));
+            Assert.AreEqual(1, sarah.GetNumberOfStations()); // check stations count updated
+
+            // ensure owner of property objects updated correctly
+            Assert.AreEqual(bob, crapperStreet.GetOwner());
+            Assert.AreEqual(bob, gangsters.GetOwner());
+            Assert.AreEqual(sarah, lewes.GetOwner());
+
+            // attempting to trade property that isn't owned by that player throws exception
+            try
+            {
+                sarah.TradeProperties(tradeOff, tradeReturn);
+            }
+            catch (HumanPlayerException e)
+            {
+                Console.WriteLine(e.Message);
+                Assert.AreEqual(e.Message, "Cannot trade a property because the player doesn't own it.");
+            }
+            
 
         }
 
@@ -329,6 +354,42 @@ namespace PropertyTycoonTest
             Assert.AreEqual(1, player.GetNumberOfUtilities());
             player.SellProperty(hydra);
             Assert.AreEqual(0, player.GetNumberOfUtilities());
+        }
+
+        [TestMethod]
+        public void Player_CheckOwnedColours()
+        {
+            HumanPlayer player = new HumanPlayer("Bob", 0, Token.Boot);
+            // brown group test (2 properties)
+            Assert.IsFalse(player.OwnsAllColour(Colour.Brown)); // player owns 0/2 brown properties
+            DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
+
+            player.BuyProperty(crapperStreet); // player owns 1/2 brown properties
+            Assert.IsFalse(player.OwnsAllColour(Colour.Brown)); 
+
+            player.BuyProperty(gangsters); // player owns 2/2 brown properties
+            Assert.IsTrue(player.OwnsAllColour(Colour.Brown));
+
+            // player sells a brown property
+            player.SellProperty(crapperStreet);
+            Assert.IsFalse(player.OwnsAllColour(Colour.Brown));
+
+            // red group test (3 properties)
+            Assert.IsFalse(player.OwnsAllColour(Colour.Red)); // player owns 0/3 red properties
+            DevelopableLand yueFei = new DevelopableLand("Yue Fei Square", 10, Colour.Red, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand mulan = new DevelopableLand("Mulan Rouge", 10, Colour.Red, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand hanXin = new DevelopableLand("Han Xin Gardens", 10, Colour.Red, new int[] { 20, 20, 40, 60, 40 });
+
+            player.BuyProperty(yueFei);
+            Assert.IsFalse(player.OwnsAllColour(Colour.Red)); // player owns 1/3 red properties
+
+            player.BuyProperty(mulan);
+            Assert.IsFalse(player.OwnsAllColour(Colour.Red)); // player owns 2/3 red properties
+
+            player.BuyProperty(hanXin);
+            Assert.IsTrue(player.OwnsAllColour(Colour.Red)); // player owns 3/3 red properties
+
         }
     }
 
