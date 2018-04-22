@@ -13,33 +13,37 @@ namespace PropertyTycoonProject
     public interface IProperty
     {
         /// <summary>
-        /// Get the current cost of rent on the property.
+        /// Return the current cost of rent on this property. Rent is always 0 if the property is unowned
+        /// OR the owner is in jail OR the property is mortgaged. For utilities, this method returns the
+        /// multipler rather than literal rent amount.
         /// </summary>
-        /// <returns>Cost of rent</returns>
+        /// <returns>Current cost of rent</returns>
         int GetRent();
 
         /// <summary>
-        /// Get the current player that owns the property.
+        /// Return the current player that owns this property.
         /// </summary>
         /// <returns>Owner (player)</returns>
         IPlayer GetOwner();
 
         /// <summary>
-        /// Update the owner of the property to the given player.
+        /// Update the owner of this property to the given player or null if unowned.
         /// </summary>
         /// <param name="player">New owner of the property.</param>
         void SetOwner(IPlayer player);
 
         /// <summary>
-        /// Get the original cash price of the property (undeveloped).
+        /// Get the original cash price of the property (undeveloped). This value is unaffected
+        /// by the mortgage status of the property.
         /// </summary>
         /// <returns>Price of property</returns>
         int GetPrice();
 
         /// <summary>
-        /// Calculate the total worth of the property, including any houses or hotel.
+        /// Calculate the current total worth of the property, including any developments
+        /// and mortgage status.
         /// </summary>
-        /// <returns>Total value of property</returns>
+        /// <returns>Total worth of property</returns>
         int CalculateTotalValue();
 
         /// <summary>
@@ -59,13 +63,15 @@ namespace PropertyTycoonProject
         void Unmortgage();
 
         /// <summary>
-        /// Check if the property can be developed by players or not.
+        /// Check if this property type can be developed by players or not. Only stations
+        /// and utilities cannot be developed in Property Tycoon.
         /// </summary>
-        /// <returns>True if property can be developed, false otherwise.</returns>
+        /// <returns>True if property type is developable, false otherwise.</returns>
         bool IsDevelopable();
 
         /// <summary>
-        /// Check if the property can be sold.
+        /// Check if the property can be sold. Note that Stations and Utilities can always 
+        /// be sold as they are undevelopable properties.
         /// </summary>
         /// <returns>True if property is eligible to be sold, false otherwise</returns>
         bool CanSellProperty();
@@ -77,10 +83,11 @@ namespace PropertyTycoonProject
         int SellPropertyToBank();
 
         /// <summary>
-        /// Get the name of the current property.
+        /// Return the name of the current property.
         /// </summary>
         /// <returns>Name of property</returns>
         string GetPropertyName();
+
 
     }
 }

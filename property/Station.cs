@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace PropertyTycoonProject
 {
+    /// <summary>
+    /// Represents a Station property in Property Tycoon. Stores all information about this
+    /// Station including a fixed rent table (£25, £50, £100, £200) with respect to the 
+    /// total number of stations owned by the owner.
+    /// </summary>
     public class Station : IProperty
     {
         private IPlayer owner;
@@ -28,64 +33,39 @@ namespace PropertyTycoonProject
             this.mortgaged = false;
         }
 
-        /// <summary>
-        /// Return the current cost of rent on the station, based on the total number
-        /// of stations owned by the owner of this station. Rent is always 0 when either
-        /// of the following conditions occur:
-        /// - Station is mortgaged OR
-        /// - Owner is in jail
-        /// </summary>
-        /// <returns>Current cost of rent</returns>
+        /// <see cref="IProperty.GetRent"/>
         public int GetRent()
         {
-            if (this.mortgaged)
+            // rent is £0 if property is unowned, mortgaged or owner is jailed
+            if (this.owner == null || this.mortgaged || owner.InJail())
             {
                 return 0;
-          
-            }
-            else if (owner.InJail())
+            } 
+            else // return rent based on the number of stations owned by the owner in total
             {
-                return 0;
-            }
-            else
-            {
-                //TODO: implement player and test check number of stations owned
                 return rentTable[owner.GetNumberOfStations() - 1];
             }
         }
 
-        /// <summary>
-        /// Return the current owner of the station.
-        /// </summary>
-        /// <returns>Player that currently owns the station.</returns>
+        /// <see cref="IProperty.GetOwner"/>
         public IPlayer GetOwner()
         {
             return this.owner;
         }
-
-        /// <summary>
-        /// Change the ownership of this station to the given player.
-        /// </summary>
-        /// <param name="player">New owner of the station.</param>
+    
+        /// <see cref="IProperty.SetOwner"/>
         public void SetOwner(IPlayer player)
         {
             this.owner = player;
         }
 
-        /// <summary>
-        /// Return the original cash price of the station.
-        /// </summary>
-        /// <returns>Price of station.</returns>
+        /// <see cref="IProperty.GetPrice"/>
         public int GetPrice()
         {
             return this.price;
         }
 
-        /// <summary>
-        /// Return the total worth of the station. If the station is mortgaged, half of its
-        /// original cash price is returned instead.
-        /// </summary>
-        /// <returns>Total cash value of station.</returns>
+        /// <see cref="IProperty.CalculateTotalValue"/>
         public int CalculateTotalValue()
         {
             if(this.mortgaged)
@@ -98,55 +78,37 @@ namespace PropertyTycoonProject
 
         }
 
-        /// <summary>
-        /// Check if the station is mortgaged or not.
-        /// </summary>
-        /// <returns>True if station is mortgaged, false otherwise.</returns>
+        /// <see cref="IProperty.IsMortgaged"/>
         public bool IsMortgaged()
         {
             return this.mortgaged;
         }
 
-        /// <summary>
-        /// Mortgage the current station.
-        /// </summary>
+        /// <see cref="IProperty.Mortgage"/>
         public void Mortgage()
         {
             this.mortgaged = true;
         }
 
-        /// <summary>
-        /// Unmortgage the current station.
-        /// </summary>
+        /// <see cref="IProperty.Unmortgage"/>
         public void Unmortgage()
         {
             this.mortgaged = false;
         }
 
-        /// <summary>
-        /// Check if the station is developable. Always returns false.
-        /// </summary>
-        /// <returns>False</returns>
+        /// <see cref="IProperty.IsDevelopable"/>
         public bool IsDevelopable()
         {
             return false;
         }
 
-        /// <summary>
-        /// Check if the station can be sold. Always returns true because stations
-        /// are undevelopable.
-        /// </summary>
-        /// <returns>True</returns>
+        /// <see cref="IProperty.CanSellProperty"/>
         public bool CanSellProperty()
         {
             return true;
         }
 
-        /// <summary>
-        /// Sell the station to the bank for cash. Station becomes unowned.
-        /// </summary>
-        /// <returns>Cash value from sale of station. If station is mortgaged, half of the original
-        /// price is returned instead.</returns>
+        /// <see cref="IProperty.SellPropertyToBank"/>
         public int SellPropertyToBank()
         {
             // sold property becomes unowned
@@ -164,10 +126,7 @@ namespace PropertyTycoonProject
             }
         }
 
-        /// <summary>
-        /// Return the string name of this station.
-        /// </summary>
-        /// <returns>name of station.</returns>
+        /// <see cref="IProperty.GetPropertyName"/>
         public string GetPropertyName()
         {
             return this.stationName;
@@ -185,7 +144,6 @@ namespace PropertyTycoonProject
 
 
 
-        
 
 
     }

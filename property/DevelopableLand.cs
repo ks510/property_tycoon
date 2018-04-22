@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace PropertyTycoonProject
 {
+    /// <summary>
+    /// Represents a property in Property Tycoon where players can develop by buying houses
+    /// and hotels. Stores all information about the property. Properties can only develop
+    /// up to 1 hotel per property (equivalent of 5 houses)
+    /// </summary>
     public class DevelopableLand : IProperty
     {
         private IPlayer owner;
@@ -16,74 +21,68 @@ namespace PropertyTycoonProject
         private Colour group;
         private int houses;
 
+        /// <summary>
+        /// Constructor for a developable property.
+        /// </summary>
+        /// <param name="name">Property name</param>
+        /// <param name="price">Cost of property</param>
+        /// <param name="group">Colour group this property belongs to</param>
+        /// <param name="rentTable">Rent amount according to the development level</param>
         public DevelopableLand(string name, int price, Colour group, 
                                                             int[] rentTable)
         {
             this.owner = null;
             this.name = name;
             this.price = price;
-            // implement array length check = 6 and throw exception
-            this.rentTable = rentTable;
             this.mortgaged = false;
             this.group = group;
             this.houses = 0;
 
-        }
-
-        /// <summary>
-        /// Return the current cost of rent on this property, based on its development state.
-        /// If the owner is in jail or the property is mortgaged, no rent is payable.
-        /// </summary>
-        /// <returns>Current cost of rent or 0 if owner is in jail or the property is mortgaged.</returns>
-        public int GetRent()
-        {
-            if (this.mortgaged)
+            // check rent table must have only 5 values (1, 2, 3, 4 houses and hotel rent cost)
+            if (rentTable.Length == 6)
             {
-                return 0;
-            }
-            else if (owner.InJail())
-            {
-                return 0;
+                this.rentTable = rentTable;
             }
             else
+            {
+                throw new DevelopableLandException("Property initialised with incorrect rent table. Possibly game data file error.");
+            }
+
+        }
+
+        /// <see cref="IProperty.GetRent"/>
+        public int GetRent()
+        {
+            // rent is £0 if property is unowned, mortgaged or owner is jailed
+            if (this.owner == null || this.mortgaged || owner.InJail())
+            {
+                return 0;
+            }
+            else // return rent based the development level of the property
             {
                 return rentTable[houses];
             }
         }
 
-        /// <summary>
-        /// Return the player that currently owns this property.
-        /// </summary>
-        /// <returns>Owner player or null if unowned (i.e. owned by bank).</returns>
+        /// <see cref="IProperty.GetOwner"/>
         public IPlayer GetOwner()
         {
             return this.owner;
         }
 
-        /// <summary>
-        /// Change the ownership of this property to the given player.
-        /// </summary>
-        /// <param name="player">New owner of property.</param>
+        /// <see cref="IProperty.SetOwner"/>
         public void SetOwner(IPlayer player)
         {
             this.owner = player;
         }
 
-        /// <summary>
-        /// Return the original price of this property (undeveloped, not mortgaged).
-        /// </summary>
-        /// <returns>Original price of property</returns>
+        /// <see cref="IProperty.GetPrice"/>
         public int GetPrice()
         {
             return this.price;
         }
 
-        /// <summary>
-        /// Calculate and return the total worth of this property, including any 
-        /// developments made. If property is mortgaged, only half of its original
-        /// price will be added to calculation.
-        /// </summary>
-        /// <returns>Total worth of property.</returns>
+        /// <see cref="IProperty.CalculateTotalValue"/>
         public int CalculateTotalValue()
         {
             int value = 0;
@@ -104,44 +103,31 @@ namespace PropertyTycoonProject
 
         }
 
-        /// <summary>
-        /// Check if this property is mortgaged or not.
-        /// </summary>
-        /// <returns>True if property is mortgaged, false otherwise.</returns>
+        /// <see cref="IProperty.IsMortgaged"/>
         public bool IsMortgaged()
         {
             return this.mortgaged;
         }
 
-        /// <summary>
-        /// Mortgage the current property.
-        /// </summary>
+        /// <see cref="IProperty.Mortgage"/>
         public void Mortgage()
         {
             this.mortgaged = true;
         }
 
-        /// <summary>
-        /// Unmortgage the current property.
-        /// </summary>
+        /// <see cref="IProperty.Unmortgage"/>
         public void Unmortgage()
         {
             this.mortgaged = false;
         }
 
-        /// <summary>
-        /// Check if this property is a developable property.
-        /// </summary>
-        /// <returns>True if developable property, false otherwise.</returns>
+        /// <see cref="IProperty.IsDevelopable"/>
         public bool IsDevelopable()
         {
             return true;
         }
 
-        /// <summary>
-        /// Check if this property can be sold.
-        /// </summary>
-        /// <returns>True if property is undeveloped, false otherwise.</returns>
+        /// <see cref="IProperty.CanSellProperty"/>
         public bool CanSellProperty()
         {
             // property can only be sold if undeveloped
@@ -155,13 +141,10 @@ namespace PropertyTycoonProject
             }
         }
 
-        /// <summary>
-        /// Sell the property to the bank for cash. Property becomes unowned.
-        /// </summary>
-        /// <returns>Cash value from sale of property. If property is mortgaged, half of the original
-        /// price is returned instead.</returns>
+        /// <see cref="IProperty.SellPropertyToBank"/>
         public int SellPropertyToBank()
         {
+            // check if the property is undeveloped before it can be sold
             if(this.CanSellProperty())
             {
                 this.owner = null;
@@ -177,14 +160,11 @@ namespace PropertyTycoonProject
             }
             else
             {
-                return 0;
+                throw new DevelopableLandException("Cannot sell the property while it is developed!");
             }
         }
 
-        /// <summary>
-        /// Return the string name of this property.
-        /// </summary>
-        /// <returns>Name of property.</returns>
+        /// <see cref="IProperty.GetPropertyName"/>
         public string GetPropertyName()
         {
             return this.name;
@@ -200,15 +180,6 @@ namespace PropertyTycoonProject
         }
 
         /// <summary>
-        /// Return the colour group of this property.
-        /// </summary>
-        /// <returns>Colour group</returns>
-        public Colour GetGroup()
-        {
-            return this.group;
-        }
-
-        /// <summary>
         /// Return the cost of development per house for this property.
         /// </summary>
         /// <returns>Cost of development.</returns>
@@ -217,7 +188,11 @@ namespace PropertyTycoonProject
             return (int)this.group;
         }
 
-        public int GetDevelopment()
+        /// <summary>
+        /// Return the development level of this property (5 houses = 1 hotel).
+        /// </summary>
+        /// <returns>Development level</returns>
+        public int GetHouses()
         {
             return this.houses;
         }
@@ -240,54 +215,17 @@ namespace PropertyTycoonProject
             }
         }
 
-        public bool Develop()
-        {
-            if(houses == 5)
-            {
-                return false;
-            }
-            //TODO: get all properties in the same group from PropertyTycoon static method
-            //check player owns all properties in group
-            //add house check development difference < 1 (difference between max and min developed property)
-            //if ok, return
-            //else, roll back changes and return false, cannot develop due to development difference
-
-            return true;
-        }
-
-        public bool Undevelop()
-        {
-            if(houses == 0)
-            {
-                return false;
-            }
-            //TODO: get all properties in the same group from PropertyTycoon static method
-            //check player owns all properties in group
-            //add house check development difference < 1 (difference between max and min developed property)
-            //if ok, return
-            //else, roll back changes and return false, cannot undevelop due to development difference
-            return true;
-        }
-
-        //TODO
-        public int CheckDevelopmentDifference()
-        {
-            //Use static method in PropertyTycoon class to get array of properties in the same colour group
-            //var properties = PropertyTycoon.GetPropertiesInGroup(this.colour);
-            //for loop to check for min and max developed property
-            //return difference value (max - min)
-            return -1;
-        }
-
         /// <summary>
-        /// Add a house to this property, increasing the development level by 1.
+        /// Increase the development level by 1. Throws exception if the maximum development
+        /// level has been reached.
         /// </summary>
-        public void AddHouse()
+        public void Develop()
         {
             if(IsMaxDeveloped())
             {
-                //throw exception - property cannot be develop further
-            } else
+                throw new DevelopableLandException("Property has reached maximum development, cannot develop further.");
+            }
+            else
             {
                 this.houses++;
             }
@@ -295,14 +233,40 @@ namespace PropertyTycoonProject
 
         /// <summary>
         /// Remove a house/hotel from this property, decreasing the development level by 1.
+        /// Throws exception if the property is undeveloped.
         /// </summary>
-        public void RemoveHouse()
+        public void Undevelop()
         {
-            this.houses--;
+            if (houses > 0)
+            {
+                this.houses--;
+            }
+            else
+            {
+                throw new DevelopableLandException("No developments on this property to sell.");
+            }
+        }
+
+        /// <summary>
+        /// Return the colour group
+        /// </summary>
+        /// <returns></returns>
+        public Colour GetColourGroup()
+        {
+            return this.group;
         }
 
         
+    }
 
-        
+    /// <summary>
+    /// An exception class to indicate errors related to DevelopableLand.
+    /// </summary>
+    public class DevelopableLandException : Exception
+    {
+        public DevelopableLandException(string message) : base(message)
+        {
+
+        }
     }
 }
