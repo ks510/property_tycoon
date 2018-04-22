@@ -120,11 +120,12 @@ namespace PropertyTycoonProject
         List<IProperty> GetPropertiesOwned();
 
         /// <summary>
-        /// Trade one of the player's properties for a property from another player. 
+        /// Update the player's list of currently owned properties to complete a trade. The owner of received
+        /// properties will be updated as well as the number of stations/utilities owned by this player.
         /// </summary>
-        /// <param name="owned">The property currently owned by the player to be traded.</param>
-        /// <param name="newProperty">The property the player is trading for from another player.</param>
-        void TradeProperty(IProperty owned, IProperty newProperty);
+        /// <param name="tradedOff">List of player's properties given to another player in a trade.</param>
+        /// <param name="received">List of properties received from another player in a trade.</param>
+        void TradeProperties(List<IProperty> tradedOff, List<IProperty> received);
         
         /// <summary>
         /// Return the total number of stations owned by this player.
@@ -186,5 +187,23 @@ namespace PropertyTycoonProject
         /// </summary>
         /// <param name="property">Property to unmortgage</param>
         void Unmortgage(IProperty property);
+
+        /// <summary>
+        /// Check if this player owns all properties in the given colour group.
+        /// </summary>
+        /// <param name="group">Colour group of properties to check</param>
+        /// <returns>True if this player owns all properties in this group or false otherwise.</returns>
+        bool OwnsAllColour(Colour group);
+
+        /// <summary>
+        /// Check if this player has completed their first circuit of the board.
+        /// </summary>
+        /// <returns>True if the player has completed at least one circuit of board, false otherwise.</returns>
+        bool HasPassedFirstGo();
+
+        /// <summary>
+        /// Update the player's status when they have completed their first circuit of the board.
+        /// </summary>
+        void SetPassedFirstGo();
     }
 }

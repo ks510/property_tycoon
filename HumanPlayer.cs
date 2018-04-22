@@ -254,30 +254,45 @@ namespace PropertyTycoonProject
             }
         }
 
-        public void TradeProperty(IProperty owned, IProperty newProperty)
+        public void TradeProperties(List<IProperty> tradedOff, List<IProperty> received)
         {
-            propertiesOwned.Remove(owned);
-            // update if old property was a station or utility
-            if (owned.GetType() == typeof(Station))
-            {
-                stations--;
-            }
-            else if (owned.GetType() == typeof(Utility))
-            {
-                utilities--;
+            // remove all properties traded off
+            foreach (IProperty owned in tradedOff) {
+                // check if this player actually owns the property they are trading off
+                if (propertiesOwned.Contains(owned))
+                {
+                    propertiesOwned.Remove(owned);
+                    // update counts if old property was a station or utility
+                    if (owned.GetType() == typeof(Station))
+                    {
+                        stations--;
+                    }
+                    else if (owned.GetType() == typeof(Utility))
+                    {
+                        utilities--;
+                    }
+                }
+                else // player cannot trade off a property they don't own!
+                {
+                    throw new HumanPlayerException("Cannot trade a property because the player doesn't own it.");
+                }
             }
 
-            propertiesOwned.Add(newProperty);
-            newProperty.SetOwner(this);
+            // add new properties received from trade
+            foreach (IProperty newProperty in received)
+            {
+                propertiesOwned.Add(newProperty);
+                newProperty.SetOwner(this);
 
-            // update if new property is a station or utility
-            if (newProperty.GetType() == typeof(Station))
-            {
-                stations++;
-            }
-            else if (newProperty.GetType() == typeof(Utility))
-            {
-                utilities++;
+                // update counts if new property is a station or utility
+                if (newProperty.GetType() == typeof(Station))
+                {
+                    stations++;
+                }
+                else if (newProperty.GetType() == typeof(Utility))
+                {
+                    utilities++;
+                }
             }
         }
 
@@ -302,10 +317,51 @@ namespace PropertyTycoonProject
             return this.token;
         }
 
-        public int Bid()
+        public bool OwnsAllColour(Colour group)
         {
-            // need to consider how to connect bidding from player to auction
-            return -1;
+            // check through all player's owned properties and count the number of [group] colour owned
+            int groupCount = 0;
+            foreach (IProperty property in propertiesOwned)
+            {
+                if (property is DevelopableLand)
+                {
+                    // if property colour matches the group colour we want, increment count
+                    DevelopableLand land = (DevelopableLand)property;
+                    if (land.GetColourGroup() == group)
+                    {
+                        groupCount++;
+                    }
+                }
+            }
+            // all groups have 3 properties except Brown and Deep Blue
+            if (group == Colour.Brown || group == Colour.DeepBlue)
+            {
+                return groupCount == 2;
+            } else
+            {
+                return groupCount == 3;
+            }
+            
+        }
+
+        public bool HasPassedFirstGo()
+        {
+            return this.passedFirstGo;
+        }
+
+        public void SetPassedFirstGo()
+        {
+            this.passedFirstGo = true;
+        }
+    }
+
+    /// <summary>
+    /// Exception class for HumanPlayer-related errors.
+    /// </summary>
+    public class HumanPlayerException : Exception
+    {
+        public HumanPlayerException(string message) : base(message)
+        {
         }
     }
 }
