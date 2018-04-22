@@ -24,10 +24,7 @@ namespace PropertyTycoonProject
             this.cardName = "Opportunity Knocks";
         }
 
-        /// <summary>
-        /// Get the name of this card type.
-        /// </summary>
-        /// <returns>Name of card (Opporunity Knocks)</returns>
+        /// <see cref="AbstractCard.GetCardName"/>
         public override string GetCardName()
         {
             return this.cardName;

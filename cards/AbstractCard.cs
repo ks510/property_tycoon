@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace PropertyTycoonProject
 {
+    /// <summary>
+    /// Represents an action card drawn by a player in Property Tycoon.
+    /// </summary>
     public abstract class AbstractCard
     {
         private string description;

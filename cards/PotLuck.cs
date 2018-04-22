@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace PropertyTycoonProject
 {
+    /// <summary>
+    /// This class represents a "Pot Luck" card in the Property Tycoon game 
+    /// where players must follow the instructions on the card.
+    /// </summary>
     public class PotLuck : AbstractCard
     {
         private string cardName;
@@ -20,10 +24,7 @@ namespace PropertyTycoonProject
             this.cardName = "Pot Luck";
         }
 
-        /// <summary>
-        /// Get the name of this card type.
-        /// </summary>
-        /// <returns>Name of card (Pot Luck)</returns>
+        /// <see cref="AbstractCard.GetCardName"/>
         public override string GetCardName()
         {
             return this.cardName;
