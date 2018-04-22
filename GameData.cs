@@ -4,6 +4,10 @@ using System.Text;
 
 namespace PropertyTycoonProject
 {
+    /// <summary>
+    /// Stores all game data needed to set up a Property Tycoon game.
+    /// A container for representing data that can be used by the game.
+    /// </summary>
     public class GameData
     {
         private List<PotLuck> potLuckCards;
@@ -12,7 +16,7 @@ namespace PropertyTycoonProject
         private int spaces;
 
         /// <summary>
-        /// Constructor a container object for the game data
+        /// Constructor a container object for the game data.
         /// </summary>
         public GameData()
         {
