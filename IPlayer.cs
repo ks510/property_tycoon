@@ -205,5 +205,20 @@ namespace PropertyTycoonProject
         /// Update the player's status when they have completed their first circuit of the board.
         /// </summary>
         void SetPassedFirstGo();
+
+        /// <summary>
+        /// Player develops the property by purchasing the next house/hotel and pays the cash to bank.
+        /// Throws exception if the player doesn't own this property, the player doesn't have
+        /// enough cash to buy the development or the property has already reached maximum development.
+        /// </summary>
+        /// <param name="property">Property to develop</param>
+        void DevelopProperty(DevelopableLand property);
+
+        /// <summary>
+        /// Player sells a house/hotel on the property and receives the original development cost
+        /// paid back from the Bank. Throws exception if the player doesn't own this property.
+        /// </summary>
+        /// <param name="property">Property to undevelop</param>
+        void UndevelopProperty(DevelopableLand property);
     }
 }

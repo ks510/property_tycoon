@@ -15,6 +15,10 @@ namespace PropertyTycoonProject
         private IBoardSpace[] board;
         private int freeParkingFunds;
 
+        /// <summary>
+        /// Constructor for a Property Tycoon board with 40 spaces.
+        /// </summary>
+        /// <param name="boardSpaces">Board spaces</param>
         public Board(IBoardSpace[] boardSpaces)
         {
             this.board = boardSpaces;

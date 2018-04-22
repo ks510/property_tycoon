@@ -44,6 +44,22 @@ namespace PropertyTycoonProject
                 }
                 else
                 {
+                    // check the player has sufficient cash to bid
+                    if ((bid.GetBidAmount() > player.PeekCash()))
+                    {
+                        throw (new AuctionException("Insufficient cash to make this bid!"));
+                    }
+
+                    foreach (KeyValuePair<IPlayer, Bid> existingBids in bids)
+                    {
+                        // check if another player has already bidded the exact same amount
+                        // to prevent ties in bidding, only one (or none) player can be the highest bidder
+                        if (existingBids.Value.GetBidAmount() == bid.GetBidAmount())
+                        {
+                            throw (new AuctionException("Cannot bid the same amount as another player!"));
+                        }
+                    }
+                    // otherwise place the bid
                     bids.Add(player, bid);
                 }
             }
@@ -63,7 +79,7 @@ namespace PropertyTycoonProject
             try
             {
                 return bids[player];
-            } catch (Exception e)
+            } catch (Exception)
             {
                 return null;
             }
@@ -81,7 +97,7 @@ namespace PropertyTycoonProject
                 try
                 {
                     bid = bids[player];
-                } catch (Exception e)
+                } catch (Exception)
                 {
                     bid = null;
                 }

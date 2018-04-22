@@ -134,11 +134,6 @@ namespace PropertyTycoonProject
             return this.turnsInJail;
         }
 
-        public void ResetTurnsInJail()
-        {
-            this.turnsInJail = 0;
-        }
-
         public void UseJailFreeCard()
         {
             // if player has at least one card, use a card by decrementing
@@ -243,6 +238,10 @@ namespace PropertyTycoonProject
                 property.Mortgage();
                 ReceiveCash(property.GetPrice() / 2);   // half of property value received in cash excluding improvements
             }
+            else
+            {
+                throw new HumanPlayerException("Cannot mortgage a property that is already mortgaged!");
+            }
         }
 
         public void Unmortgage(IProperty property)
@@ -251,6 +250,10 @@ namespace PropertyTycoonProject
             {
                 DeductCash(property.GetPrice() / 2);    // pay half of property value to unmortgage
                 property.Unmortgage();  // set property to unmortgaged
+            }
+            else
+            {
+                throw new HumanPlayerException("Cannot unmortgage a property that isn't mortgaged!");
             }
         }
 
@@ -353,6 +356,59 @@ namespace PropertyTycoonProject
         {
             this.passedFirstGo = true;
         }
+
+        /// <see cref="IPlayer.DevelopProperty"/>
+        public void DevelopProperty(DevelopableLand property)
+        {
+            if (propertiesOwned.Contains(property))
+            {
+                int developCost = property.GetDevelopCost();
+                if (developCost <= cash)
+                {
+                    try // attempt to develop property and propagate errors to front end
+                    {
+                        property.Develop();
+                        cash = cash - developCost;
+                    }
+                    catch (DevelopableLandException e)
+                    {
+                        throw new HumanPlayerException(e.Message);
+                    }
+                }
+                else
+                {
+                    throw new DevelopableLandException("Player doesn't have enough cash to develop the property!");
+                }
+            } 
+            else
+            {
+                throw new DevelopableLandException("Cannot develop a property that you don't own!");
+            }
+        }
+
+        /// <see cref="IPlayer.UndevelopProperty"/>
+        public void UndevelopProperty(DevelopableLand property)
+        {
+            // check if player owns this property
+            if (propertiesOwned.Contains(property))
+            {
+                int developCost = property.GetDevelopCost();
+                try  // attempt to undevelop and propagate errors to front end
+                {
+                    property.Undevelop();
+                    cash = cash + developCost;
+                }
+                catch (DevelopableLandException e)
+                {
+                    throw new HumanPlayerException(e.Message);
+                }
+
+            }
+            else
+            {
+                throw new HumanPlayerException("Cannot undevelop a property that you don't own!");
+            }
+        }
     }
 
     /// <summary>
@@ -364,4 +420,6 @@ namespace PropertyTycoonProject
         {
         }
     }
+
+
 }

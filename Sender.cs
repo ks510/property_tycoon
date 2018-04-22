@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace PropertyTycoonProject
 {
+    /// <summary>
+    /// Represents all entities that may pay money to a player in Property Tycoon.
+    /// </summary>
     public enum Sender
     {
         Bank,
