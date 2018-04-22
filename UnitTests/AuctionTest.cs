@@ -66,5 +66,68 @@ namespace PropertyTycoonTest
             Assert.AreEqual(sarah, stationAuction.GetHighestBidder());
 
         }
+
+        [TestMethod]
+        public void Auction_BiddingSameAmount()
+        {
+            HumanPlayer bob = new HumanPlayer("Bob", 0, Token.Boot);
+            HumanPlayer sarah = new HumanPlayer("Sarah", 1, Token.Cat);
+            List<IPlayer> bidding = new List<IPlayer> { bob, sarah };
+            IProperty station = new Station("Falmer Station", 200);
+
+            Auction stationAuction = new Auction(station, bidding);
+
+            // bob bids £50 first
+            stationAuction.PlaceBid(bob, new Bid(50, true));
+            // sarah also bids £50 but not allowed
+            try
+            {
+                stationAuction.PlaceBid(sarah, new Bid(50, true));
+            }
+            catch (AuctionException e)
+            {
+                Console.WriteLine(e.Message);
+                Assert.AreEqual("Cannot bid the same amount as another player!", e.Message);
+            }
+            // can't place bid, try £51 instead
+            stationAuction.PlaceBid(sarah, new Bid(51, true));
+            Assert.AreEqual(sarah, stationAuction.GetHighestBidder());
+        }
+
+        [TestMethod]
+        public void Auction_HasFinished()
+        {
+            HumanPlayer bob = new HumanPlayer("Bob", 0, Token.Boot);
+            HumanPlayer sarah = new HumanPlayer("Sarah", 1, Token.Cat);
+            HumanPlayer tom = new HumanPlayer("Tom", 2, Token.Smartphone);
+            HumanPlayer hope = new HumanPlayer("Hope", 3, Token.Goblet);
+            List<IPlayer> bidding = new List<IPlayer> { bob, sarah, tom };
+            IProperty station = new Station("Falmer Station", 200);
+
+            Auction stationAuction = new Auction(station, bidding);
+            // bob and sarah have bidded
+            stationAuction.PlaceBid(bob, new Bid(100, true));
+            stationAuction.PlaceBid(sarah, new Bid(200, true));
+            // checking if bidding has finished
+            Assert.IsFalse(stationAuction.FinishedBidding());
+
+            // tom finally bids, but types £5000 instead of £500 (he only has £1500)
+            try
+            {
+                stationAuction.PlaceBid(tom, new Bid(5000, true));
+            }
+            catch (AuctionException e)
+            {
+                Console.WriteLine(e.Message);
+                Assert.AreEqual("Insufficient cash to make this bid!", e.Message);
+            }
+            // tom bids £500 correctly this time!
+            stationAuction.PlaceBid(tom, new Bid(500, true));
+            // all players have bidded, auction is finished, tom wins
+            Assert.IsTrue(stationAuction.FinishedBidding());
+            Assert.AreEqual(tom, stationAuction.GetHighestBidder());
+
+
+        }
     }
 }
