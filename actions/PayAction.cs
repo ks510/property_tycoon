@@ -8,7 +8,7 @@ namespace PropertyTycoonProject
 {
     /// <summary>
     /// Represents an action where the player must pay the named recipient
-    /// the given amount of cash.
+    /// the specified amount of cash e.g. Pay £50 fine to Free Parking.
     /// </summary>
     public class PayAction : IAction
     {
@@ -27,9 +27,9 @@ namespace PropertyTycoonProject
         }
 
         /// <summary>
-        /// Return the amount needed to pay by player.
+        /// Return the amount this player needs to pay to recipient.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Amount to pay</returns>
         public int GetAmount()
         {
             return this.amount;
