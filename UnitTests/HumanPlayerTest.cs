@@ -86,6 +86,7 @@ namespace PropertyTycoonTest
             Assert.AreEqual(newSpace, player.GetCurrentSpace());
 
             newSpace = 0;
+            player.MoveToSpace(newSpace);
             // player moves to correct space
             Assert.AreEqual(newSpace, player.GetCurrentSpace());
         }
@@ -122,7 +123,7 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void Player_TurnsInJail()
         {
-            // incrementing player's turns in jail and reseting to 0
+            // incrementing player's turns in jail and releasing them (reset to 0)
             HumanPlayer player = new HumanPlayer("Bob", 0, Token.Smartphone);
             Assert.AreEqual(0, player.GetTurnsInJail());
             player.IncrementTurnsInJail();
@@ -131,7 +132,7 @@ namespace PropertyTycoonTest
             Assert.AreEqual(2, player.GetTurnsInJail());
             player.IncrementTurnsInJail();
             Assert.AreEqual(3, player.GetTurnsInJail());
-            player.ResetTurnsInJail();
+            player.ReleaseFromJail();
             Assert.AreEqual(0, player.GetTurnsInJail());
             // may need to implement safety checks i.e. does player need to be in jail to increment this variable?
 
@@ -215,8 +216,9 @@ namespace PropertyTycoonTest
             Station falmer = new Station("Falmer Station", 200);
             HumanPlayer player = new HumanPlayer("Bob", 0, Token.Smartphone);
             Assert.AreEqual(1500, player.PeekCash());
-            Assert.AreEqual(1, player.GetNumberOfStations()); // check numebr of stations incremented correctly
+
             player.BuyProperty(falmer);
+            Assert.AreEqual(1, player.GetNumberOfStations()); // check numebr of stations incremented correctly
 
             // player sells falmer station for £200
             player.SellProperty(falmer);
@@ -224,6 +226,8 @@ namespace PropertyTycoonTest
             Assert.IsNull(falmer.GetOwner());
             Assert.IsFalse(falmer.IsMortgaged());
             Assert.IsFalse(player.GetPropertiesOwned().Contains(falmer));
+            Assert.AreEqual(0, player.GetNumberOfStations());
+
         }
 
         [TestMethod]
@@ -259,19 +263,42 @@ namespace PropertyTycoonTest
             Assert.AreEqual(1350, player.PeekCash());
             Assert.IsTrue(edison.IsMortgaged());
 
+            // attempting to mortgage a property that is already mortgaged, error
+            try
+            {
+                player.Mortgage(edison);
+            }
+            catch (HumanPlayerException e)
+            {
+                Console.WriteLine(e.Message);
+                Assert.AreEqual("Cannot mortgage a property that is already mortgaged!", e.Message);
+            }
+            
+            Assert.AreEqual(1350, player.PeekCash());
+
             // player unmortgages property & pays £150
             player.Unmortgage(edison);
             Assert.IsFalse(edison.IsMortgaged());
             Assert.AreEqual(300, edison.CalculateTotalValue());
             Assert.AreEqual(1200, player.PeekCash());
 
+            // attempting to unmortgage a property that is isnt mortgaged, error
+            try
+            {
+                player.Unmortgage(edison);
+            }
+            catch (HumanPlayerException e)
+            {
+                Console.WriteLine(e.Message);
+                Assert.AreEqual("Cannot unmortgage a property that isn't mortgaged!", e.Message);
+            }
         }
 
         [TestMethod]
         public void Player_TradeProperty()
         {
-            DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
-            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[6] { 20, 20, 40, 60, 80, 100 });
+            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[6] { 20, 20, 40, 60, 80, 100 });
             Station lewes = new Station("Lewes Station", 200);
             HumanPlayer sarah = new HumanPlayer("Sarah", 0, Token.Boot);
             HumanPlayer bob = new HumanPlayer("Bob", 1, Token.Hatstand);
@@ -362,8 +389,8 @@ namespace PropertyTycoonTest
             HumanPlayer player = new HumanPlayer("Bob", 0, Token.Boot);
             // brown group test (2 properties)
             Assert.IsFalse(player.OwnsAllColour(Colour.Brown)); // player owns 0/2 brown properties
-            DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
-            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[6] { 20, 20, 40, 60, 80, 120 });
+            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[6] { 20, 20, 40, 60, 80, 120 });
 
             player.BuyProperty(crapperStreet); // player owns 1/2 brown properties
             Assert.IsFalse(player.OwnsAllColour(Colour.Brown)); 
@@ -377,9 +404,9 @@ namespace PropertyTycoonTest
 
             // red group test (3 properties)
             Assert.IsFalse(player.OwnsAllColour(Colour.Red)); // player owns 0/3 red properties
-            DevelopableLand yueFei = new DevelopableLand("Yue Fei Square", 10, Colour.Red, new int[] { 20, 20, 40, 60, 40 });
-            DevelopableLand mulan = new DevelopableLand("Mulan Rouge", 10, Colour.Red, new int[] { 20, 20, 40, 60, 40 });
-            DevelopableLand hanXin = new DevelopableLand("Han Xin Gardens", 10, Colour.Red, new int[] { 20, 20, 40, 60, 40 });
+            DevelopableLand yueFei = new DevelopableLand("Yue Fei Square", 10, Colour.Red, new int[6] { 20, 20, 40, 60, 80, 120});
+            DevelopableLand mulan = new DevelopableLand("Mulan Rouge", 10, Colour.Red, new int[6] { 20, 20, 40, 60, 80, 120 });
+            DevelopableLand hanXin = new DevelopableLand("Han Xin Gardens", 10, Colour.Red, new int[6] { 20, 20, 40, 60, 80, 120 });
 
             player.BuyProperty(yueFei);
             Assert.IsFalse(player.OwnsAllColour(Colour.Red)); // player owns 1/3 red properties
@@ -390,6 +417,51 @@ namespace PropertyTycoonTest
             player.BuyProperty(hanXin);
             Assert.IsTrue(player.OwnsAllColour(Colour.Red)); // player owns 3/3 red properties
 
+        }
+
+        [TestMethod]
+        public void Player_DevelopProperty()
+        {
+            HumanPlayer player = new HumanPlayer("Bob", 0, Token.Boot);
+            DevelopableLand crapperStreet = new DevelopableLand("Crapper Street", 100, Colour.Brown, new int[6] { 20, 20, 40, 60, 80, 100 });
+            DevelopableLand gangsters = new DevelopableLand("Gangsters Paradise", 100, Colour.Brown, new int[6] { 20, 20, 40, 60, 80, 100 });
+
+            // attempt to develop crapper street without buying property first throws error
+            try
+            {
+                player.DevelopProperty(crapperStreet);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Cannot develop a property that you don't own!", e.Message);
+            }
+
+            // bob buys property and buys 2 houses, development = 2
+            player.BuyProperty(crapperStreet);
+            int cash = player.PeekCash();
+            player.DevelopProperty(crapperStreet);
+            player.DevelopProperty(crapperStreet);
+            Assert.AreEqual(cash - 100, player.PeekCash());
+            Assert.AreEqual(2, crapperStreet.GetHouses());
+
+            // bob sells developments
+            player.UndevelopProperty(crapperStreet);
+            player.UndevelopProperty(crapperStreet);
+            Assert.AreEqual(cash, player.PeekCash());
+            Assert.AreEqual(0, crapperStreet.GetHouses());
+
+            // bob sells the property and attempts to sell developments
+            player.SellProperty(crapperStreet);
+            try
+            {
+                player.UndevelopProperty(crapperStreet);
+            }
+            catch (HumanPlayerException e)
+            {
+                Assert.AreEqual("Cannot undevelop a property that you don't own!", e.Message);
+            }
+
+            
         }
     }
 

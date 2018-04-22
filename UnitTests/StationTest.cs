@@ -31,6 +31,8 @@ namespace PropertyTycoonTest
             Assert.IsNull(station.GetOwner());
             // check initialise unmortgaged
             Assert.IsFalse(station.IsMortgaged());
+            // implements IProperty interface
+            Assert.IsTrue(station is IProperty);
 
         }
 
@@ -63,24 +65,49 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void Station_CorrectRentReturned()
         {
-            //TODO: if player is in jail, rent = 0
-            Station station = new Station("Brighton Station", 200);
-            //IPlayer player = new HumanPlayer();
-            //station.SetOwner(player)
-            //player.GoToJail();
-            //Assert.AreEqual(1, station.GetRent());
+            // player buys 1 station
+            Station station1 = new Station("Brighton Station", 200);
+            Station station2 = new Station("Brighton Station", 200);
+            Station station3 = new Station("Brighton Station", 200);
+            Station station4 = new Station("Brighton Station", 200);
+            Assert.AreEqual(0, station1.GetRent()); // unowned station rent = 0
 
-            // if station is mortgaged, rent = 0
-            Station station2 = new Station("Falmer Station", 200);
-            station.Mortgage();
-            Assert.IsTrue(station.IsMortgaged());
-            Assert.AreEqual(0, station.GetRent());
+            IPlayer player = new HumanPlayer("Bob", 0, Token.Cat);
 
-            //TODO: if player owns x stations, return correct rent:
-            // 1 station = £25
-            // 2 stations = £50
-            // 3 stations = £100
-            // 4 stations = £200
+            // bob buys 1 station, rent = £25
+            player.BuyProperty(station1);
+            Assert.AreEqual(25, station1.GetRent());
+
+            // bob goes to jail, rent = £0
+            player.GoToJail(31);
+            Assert.AreEqual(0, station1.GetRent());
+
+            // bob released from jail and buys another station
+            player.ReleaseFromJail();
+            player.BuyProperty(station2);
+            Assert.AreEqual(50, station1.GetRent());
+            Assert.AreEqual(50, station2.GetRent());
+
+            // bob buys the remaining stations, rent = £200
+            player.BuyProperty(station3);
+            player.BuyProperty(station4);
+            // maximum rent on each station = £200
+            Assert.AreEqual(200, station1.GetRent());
+            Assert.AreEqual(200, station2.GetRent());
+            Assert.AreEqual(200, station3.GetRent());
+            Assert.AreEqual(200, station4.GetRent());
+
+            // bob mortgages a station, rent = £0
+            player.Mortgage(station3);
+            Assert.AreEqual(0, station3.GetRent());
+
+            // bob sells the mortgaged staton and one other station
+            // he only owns 2 stations now, rent = £50
+            player.SellProperty(station3);
+            player.SellProperty(station4);
+            Assert.AreEqual(50, station1.GetRent());
+            Assert.AreEqual(50, station2.GetRent());
+
         }
 
         [TestMethod]

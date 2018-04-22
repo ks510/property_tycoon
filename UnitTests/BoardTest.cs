@@ -42,6 +42,7 @@ namespace PropertyTycoonTest
             Assert.AreEqual(250, funds);
             Assert.AreEqual(0, board.PeekFreeParking());
         }
+    
     }
 
 }

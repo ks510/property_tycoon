@@ -11,7 +11,7 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void CreatePotLuckCard()
         {
-            GoToJailAction action = new GoToJailAction();
+            GoToJailAction action = new GoToJailAction(31);
             PotLuck card = new PotLuck("Go To Jail!", action);
 
             // correct description
@@ -32,7 +32,7 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void CreatePotLuckCard_AbstractCardType()
         {
-            GoToJailAction action = new GoToJailAction();
+            GoToJailAction action = new GoToJailAction(31);
             AbstractCard card = new PotLuck("Go To Jail!", action);
 
             // correct description
@@ -53,7 +53,7 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void CreateOpportunityKnocksCard()
         {
-            GoToJailAction action = new GoToJailAction();
+            GoToJailAction action = new GoToJailAction(31);
             OpportunityKnocks card = new OpportunityKnocks("Go To Jail!", action);
 
             // correct description
@@ -75,7 +75,7 @@ namespace PropertyTycoonTest
         [TestMethod]
         public void CreateOpportunityKnocksCard_AbstractCardType()
         {
-            GoToJailAction action = new GoToJailAction();
+            GoToJailAction action = new GoToJailAction(31);
             AbstractCard card = new OpportunityKnocks("Go To Jail!", action);
             // correct description
             var description = card.GetDescription();
