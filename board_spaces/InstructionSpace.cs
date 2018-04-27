@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace PropertyTycoonProject
+namespace PropertyTycoonLibrary
 {
     /// <summary>
     /// Represents a board space with instructions to be followed
@@ -13,14 +9,17 @@ namespace PropertyTycoonProject
     public class InstructionSpace : IBoardSpace
     {
         private IAction instruction;
+        private string description;
 
         /// <summary>
         /// Constructor for an instruction board space.
         /// </summary>
         /// <param name="instruction">instruction to follow on landing</param>
-        public InstructionSpace(IAction instruction)
+        /// <param name="description">Description for the board space</param>
+        public InstructionSpace(string description, IAction instruction)
         {
             this.instruction = instruction;
+            this.description = description;
         }
 
         /// <summary>
@@ -30,6 +29,11 @@ namespace PropertyTycoonProject
         public IAction GetInstruction()
         {
             return this.instruction;
+        }
+
+        public string GetDescription()
+        {
+            return this.description;
         }
     }
 }
