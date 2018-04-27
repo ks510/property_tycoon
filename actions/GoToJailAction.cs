@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PropertyTycoonProject
+namespace PropertyTycoonLibrary
 {
     /// <summary>
     /// Represents the "go to jail" action and stores the jail board space ID.

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
-namespace PropertyTycoonProject
+namespace PropertyTycoonLibrary
 {
     /// <summary>
     /// Marker interface for all action classes. Implementing classes represent an
