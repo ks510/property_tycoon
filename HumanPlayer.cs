@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PropertyTycoonProject
+namespace PropertyTycoonLibrary
 {
     public class HumanPlayer : IPlayer
     {
@@ -23,7 +20,6 @@ namespace PropertyTycoonProject
         private bool bankrupt;
         private bool passedFirstGo;
         private string playerName;
-        private int playerID;
         private Token token;
 
         /// <summary>
@@ -32,7 +28,7 @@ namespace PropertyTycoonProject
         /// <param name="name">Player's name</param>
         /// <param name="playerID">Player ID</param>
         /// <param name="token">Token that represents this player</param>
-        public HumanPlayer(string playerName, int playerID, Token token)
+        public HumanPlayer(string playerName, Token token)
         {
             this.cash = 1500;
             this.currentSpace = 0;
@@ -47,7 +43,6 @@ namespace PropertyTycoonProject
             this.bankrupt = false;
             this.passedFirstGo = false;
             this.playerName = playerName;
-            this.playerID = playerID;
             this.token = token;
         }
 
@@ -77,7 +72,7 @@ namespace PropertyTycoonProject
             return dice1 + dice2;
         }
 
-        public bool RolledDouble()
+        public bool HasRolledDouble()
         {
             return this.rolledDouble;
         }
@@ -408,6 +403,13 @@ namespace PropertyTycoonProject
             {
                 throw new HumanPlayerException("Cannot undevelop a property that you don't own!");
             }
+        }
+
+
+        public void RolledDouble()
+        {
+            this.rolledDouble = true;
+            this.doublesRolled++;
         }
     }
 

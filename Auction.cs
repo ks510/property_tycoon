@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace PropertyTycoonProject
+using System;
+using System.Collections.Generic;
+
+namespace PropertyTycoonLibrary
 {
     public class Auction
     {
@@ -79,7 +78,8 @@ namespace PropertyTycoonProject
             try
             {
                 return bids[player];
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
@@ -97,7 +97,8 @@ namespace PropertyTycoonProject
                 try
                 {
                     bid = bids[player];
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     bid = null;
                 }
@@ -105,7 +106,7 @@ namespace PropertyTycoonProject
                 if (bid == null)   // if any player hasn't bidded, return false
                 {
                     return false;
-                } 
+                }
             }
 
             return true;
@@ -120,7 +121,7 @@ namespace PropertyTycoonProject
         {
             IPlayer highestBidder = null;
             int highestBid = 0;
-             
+
             foreach (KeyValuePair<IPlayer, Bid> bid in bids)
             {
                 int bidAmount = bid.Value.GetBidAmount();
@@ -156,5 +157,4 @@ namespace PropertyTycoonProject
         {
         }
     }
-
 }

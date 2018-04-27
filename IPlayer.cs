@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace PropertyTycoonProject
+
+namespace PropertyTycoonLibrary
 {
     public interface IPlayer
     {
@@ -20,7 +17,19 @@ namespace PropertyTycoonProject
         /// Check if the player rolled a double in the current turn.
         /// </summary>
         /// <returns></returns>
-        bool RolledDouble();
+        bool HasRolledDouble();
+
+        /// <summary>
+        /// This player has rolled a double, update its state and increment the number of doubles
+        /// rolled in this turn.
+        /// </summary>
+        void RolledDouble();
+
+        /// <summary>
+        /// Return the number of the board space the player is currently on.
+        /// </summary>
+        /// <returns></returns>
+        int GetCurrentSpace();
 
         /// <summary>
         /// Move this player's token the given number of spaces on the board.
