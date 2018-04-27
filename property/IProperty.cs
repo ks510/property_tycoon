@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace PropertyTycoonProject
+namespace PropertyTycoonLibrary
 {
     /// <summary>
     /// Implementing classes represent a Property available for purchase 
