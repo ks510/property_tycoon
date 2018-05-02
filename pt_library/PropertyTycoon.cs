@@ -33,7 +33,9 @@ namespace PropertyTycoonLibrary
                 this.players = players;
             }
             else { throw (new PropertyTycoonException("Game can only start with 2-6 players!")); }
-            this.playerTakingTurn = null;
+
+            this.playerTakingTurn = players[0];
+            this.currentPlayer = 0;
             this.auction = null;
 
             // randomly shuffle the pot luck cards into a pile
@@ -44,17 +46,13 @@ namespace PropertyTycoonLibrary
             List<OpportunityKnocks> shuffledOpKnocks = Shuffle(gameData.GetOpportunityKnocksCards());
             this.opportunityKnocksPile = new Queue<OpportunityKnocks>(shuffledOpKnocks);
 
-            this.currentPlayer = -1;
+            
         }
 
-        // making a default property tycoon game for testing purposes
+        // making a default property tycoon game with 6 players
         public PropertyTycoon()
         {
-            // InputParser should be called here to process spreadsheet and spit out GameData
-            // object which is used to create the game instance
-            this.playerTakingTurn = null;
-            this.currentPlayer = -1;
-            this.auction = null;
+
 
             // board hard coded from spreadsheet
             IBoardSpace[] spaces = new IBoardSpace[40];
@@ -67,24 +65,24 @@ namespace PropertyTycoonLibrary
             spaces[6] = new PropertySpace(new DevelopableLand("Weeping Angel", 100, Colour.Blue, new int[] { 6, 30, 90, 270, 400, 550 }));
             spaces[7] = new InstructionSpace("Opportunity Knocks", new DrawCardAction(CardType.OpportunityKnocks));
             spaces[8] = new PropertySpace(new DevelopableLand("Potts Avenue", 100, Colour.Blue, new int[] { 6, 30, 90, 270, 400, 550 }));
-            spaces[9] = new PropertySpace(new DevelopableLand("Nardole Drive", 120, Colour.Blue, new int[] { 40, 100, 300, 450, 600 }));
+            spaces[9] = new PropertySpace(new DevelopableLand("Nardole Drive", 120, Colour.Blue, new int[] { 8, 40, 100, 300, 450, 600 }));
             spaces[10] = new JailSpace();
-            spaces[11] = new PropertySpace(new DevelopableLand("Skywalker Drive", 140, Colour.Purple, new int[] { 50, 150, 450, 625, 750 }));
+            spaces[11] = new PropertySpace(new DevelopableLand("Skywalker Drive", 140, Colour.Purple, new int[] { 10, 50, 150, 450, 625, 750 }));
             spaces[12] = new PropertySpace(new Utility("Tesla Power Co", 150));
             spaces[13] = new PropertySpace(new DevelopableLand("Wookie Hole", 140, Colour.Purple, new int[] { 10, 50, 150, 450, 625, 750 }));
-            spaces[14] = new PropertySpace(new DevelopableLand("Rey Lane", 160, Colour.Purple, new int[] { 60, 180, 500, 700, 900 }));
+            spaces[14] = new PropertySpace(new DevelopableLand("Rey Lane", 160, Colour.Purple, new int[] { 12, 60, 180, 500, 700, 900 }));
             spaces[15] = new PropertySpace(new Station("Hove Station", 200));
-            spaces[16] = new PropertySpace(new DevelopableLand("Cooper Drive", 200, Colour.Orange, new int[] { 70, 200, 550, 750, 950 }));
+            spaces[16] = new PropertySpace(new DevelopableLand("Cooper Drive", 200, Colour.Orange, new int[] { 14, 70, 200, 550, 750, 950 }));
             spaces[17] = new InstructionSpace("Pot Luck", new DrawCardAction(CardType.PotLuck));
-            spaces[18] = new PropertySpace(new DevelopableLand("Wolowitz Street", 180, Colour.Orange, new int[] { 70, 200, 550, 750, 950 }));
-            spaces[19] = new PropertySpace(new DevelopableLand("Penny Lane", 200, Colour.Orange, new int[] { 80, 220, 600, 800, 1000 }));
+            spaces[18] = new PropertySpace(new DevelopableLand("Wolowitz Street", 180, Colour.Orange, new int[] { 14, 70, 200, 550, 750, 950 }));
+            spaces[19] = new PropertySpace(new DevelopableLand("Penny Lane", 200, Colour.Orange, new int[] { 16, 80, 220, 600, 800, 1000 }));
             spaces[20] = new FreeParkingSpace();
-            spaces[21] = new PropertySpace(new DevelopableLand("Yue Fei Square", 220, Colour.Red, new int[] { 90, 250, 700, 875, 1050 }));
+            spaces[21] = new PropertySpace(new DevelopableLand("Yue Fei Square", 220, Colour.Red, new int[] { 18, 90, 250, 700, 875, 1050 }));
             spaces[22] = new InstructionSpace("Opportunity Knocks", new DrawCardAction(CardType.OpportunityKnocks));
             spaces[23] = new PropertySpace(new DevelopableLand("Mulan Rouge", 220, Colour.Red, new int[] { 18, 90, 250, 700, 875, 1050 }));
             spaces[24] = new PropertySpace(new DevelopableLand("Han Xin Gardens", 240, Colour.Red, new int[] { 20, 100, 300, 750, 925, 1100 }));
             spaces[25] = new PropertySpace(new Station("Falmer Station", 200));
-            spaces[26] = new PropertySpace(new DevelopableLand("Kirk Close", 260, Colour.Yellow, new int[] { 110, 330, 800, 975, 1150 }));
+            spaces[26] = new PropertySpace(new DevelopableLand("Kirk Close", 260, Colour.Yellow, new int[] { 22, 110, 330, 800, 975, 1150 }));
             spaces[27] = new PropertySpace(new DevelopableLand("Picard Avenue", 260, Colour.Yellow, new int[] { 22, 110, 330, 800, 975, 1150 }));
             spaces[28] = new PropertySpace(new Utility("Edison Water", 150));
             spaces[29] = new PropertySpace(new DevelopableLand("Crusher Creek", 280, Colour.Yellow, new int[] { 22, 120, 360, 850, 1025, 1200 }));
@@ -162,13 +160,17 @@ namespace PropertyTycoonLibrary
                 new HumanPlayer("Polly", Token.Goblet)
             };
 
+            this.currentPlayer = 0;
+            this.playerTakingTurn = players[currentPlayer];
+            this.auction = null;
+
         }
 
-        // TODO: how to cordinate player turns????
-        public void NewTurn()
+
+        public PropertyTycoon(IPlayer[] players) : this()
         {
-            currentPlayer = currentPlayer + 1;
-            playerTakingTurn = players[currentPlayer];
+            this.players = players;
+            this.playerTakingTurn = players[currentPlayer];
         }
 
 
@@ -260,6 +262,10 @@ namespace PropertyTycoonLibrary
 
         public void BuyProperty(IProperty property)
         {
+            if (playerTakingTurn.PeekCash() < property.GetPrice())
+            {
+                throw new PropertyTycoonException("Insufficient cash to purchase property.");
+            }
             playerTakingTurn.BuyProperty(property);
             property.SetOwner(playerTakingTurn);
         }
@@ -299,6 +305,51 @@ namespace PropertyTycoonLibrary
             playerTakingTurn.TradeProperties(offer, request);
             otherPlayer.TradeProperties(request, offer);
         }
+
+        public void PayRent(IProperty property)
+        {
+            if (playerTakingTurn.PeekCash() < property.GetRent())
+            {
+                throw new PropertyTycoonException("Insufficient cash to pay rent.");
+
+            } else
+            {
+                this.playerTakingTurn.DeductCash(property.GetRent());
+            }
+            
+        }
+
+        /// <summary>
+        /// Check if the current game has finished (only one player remains).
+        /// </summary>
+        /// <returns>True if only one player is left (not bankrupt), false otherwise</returns>
+        public bool HasGameFinished()
+        {
+            int remainingPlayers = 0;
+            foreach (IPlayer player in players)
+            {
+                if (!player.IsBankrupt())
+                {
+                    remainingPlayers++;
+                }
+            }
+
+            if (remainingPlayers > 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void EndTurn()
+        {
+            this.currentPlayer = (currentPlayer + 1) % players.Length;
+            this.playerTakingTurn = players[currentPlayer];
+        }
+        
 
     }
 
